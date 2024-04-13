@@ -4,6 +4,7 @@ import { Template } from "./Template";
 import { ColorPicker } from "./component/ColorPicker";
 import { WhiteCircle } from "./component/WhiteCircle";
 import { filterAndReducePathColors } from "./useFetch/filterPathColors";
+import { Display } from "./component/Display";
 
 function App() {
   const [selectedColor, setSelectedColor] = useState("#000000");
@@ -11,6 +12,9 @@ function App() {
   const lowerSemiCircles = [];
   const upperCircleRef = useRef();
   const lowerCircleRef = useRef();
+  const [showDisplay, setShowDisplay] = useState(false);
+  const [upperPathColors, setUpperPathColors] = useState([]);
+  const [lowerPathColors, setLowerPathColors] = useState([]);
 
   // Function to get path colors from upper and lower circles
   const getPathColors = () => {
@@ -31,8 +35,10 @@ function App() {
       upperPathColorsTemp[key].push(color);
     });
 
-    const upperPathColorsFiltered =
-      filterAndReducePathColors(upperPathColorsTemp);
+    const upperPathColorsFiltered = filterAndReducePathColors(
+      upperPathColorsTemp,
+      true
+    );
 
     lowerPaths.forEach((path, index) => {
       const color = path.getAttribute("fill");
@@ -41,11 +47,15 @@ function App() {
       lowerPathColorsTemp[key].push(color);
     });
 
-    const lowerPathColorsFiltered =
-      filterAndReducePathColors(lowerPathColorsTemp);
+    const lowerPathColorsFiltered = filterAndReducePathColors(
+      lowerPathColorsTemp,
+      false
+    );
 
-    console.log("Upper Circle Path Colors:", upperPathColorsFiltered);
-    console.log("Lower Circle Path Colors:", lowerPathColorsFiltered);
+    // show Display and give props
+    setShowDisplay(true);
+    setUpperPathColors(upperPathColorsFiltered);
+    setLowerPathColors(lowerPathColorsFiltered);
   };
 
   // Loop 10 times
@@ -65,6 +75,7 @@ function App() {
         top={top}
         left={left}
         pathColor={selectedColor}
+        showStroke
       />
     );
 
@@ -76,29 +87,39 @@ function App() {
         bottom={top}
         left={left}
         pathColor={selectedColor}
+        showStroke
       />
     );
   }
 
   return (
     <div className="App">
-      <div className="editPanel">
-        <ColorPicker onChange={setSelectedColor} />
+      <div className="editContainer">
+        <div className="editPanel">
+          <ColorPicker onChange={setSelectedColor} />
 
-        <button onClick={getPathColors}>Get Path Colors</button>
-      </div>
-
-      <div className="boxContainer">
-        <div className="upperSemiCircle" ref={upperCircleRef}>
-          {upperSemiCircles}
+          <button onClick={getPathColors}>Get Path Colors</button>
         </div>
 
-        <div className="lowerSemiCircleContainer" ref={lowerCircleRef}>
-          <div className="lowerSemiCircle">{lowerSemiCircles}</div>
-        </div>
+        <div className="boxContainer">
+          <div className="upperSemiCircle" ref={upperCircleRef}>
+            {upperSemiCircles}
+          </div>
 
-        <WhiteCircle />
+          <div className="lowerSemiCircleContainer" ref={lowerCircleRef}>
+            <div className="lowerSemiCircle">{lowerSemiCircles}</div>
+          </div>
+
+          <WhiteCircle />
+        </div>
       </div>
+
+      {showDisplay && (
+        <Display
+          upperPathColors={upperPathColors}
+          lowerPathColors={lowerPathColors}
+        />
+      )}
     </div>
   );
 }

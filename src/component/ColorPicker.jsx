@@ -21,6 +21,7 @@ export const ColorPicker = ({ onChange }) => {
     "#FFA500", // Orange
     "#808080", // Gray
     "#FFFFFF", // White
+    "#000000", // Black
   ];
 
   // Function to handle popular color selection

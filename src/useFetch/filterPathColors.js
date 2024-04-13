@@ -1,6 +1,6 @@
-export function filterAndReducePathColors(pathColorsTemp) {
+export function filterAndReducePathColors(pathColorsTemp, isUpper) {
   const filteredPathColors = Object.keys(pathColorsTemp)
-    .filter((key) => key % 2 !== 0) // Filter out keys where index is odd for lower, even for upper
+    .filter((key) => (isUpper ? key % 2 === 0 : key % 2 !== 0)) // Filter keys based on isUpper
     .reduce((acc, key) => {
       acc[key] = pathColorsTemp[key];
       return acc;

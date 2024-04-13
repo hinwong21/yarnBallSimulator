@@ -1,7 +1,17 @@
 .App {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  width: 100vw;
+}
+
+.editContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
   text-align: center;
   width: 100vw;
   height: 100vh;
@@ -66,7 +76,9 @@
 .colorPickerContainer {
   display: flex;
   flex-direction: column;
-  width: 200px;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
 }
 
 .colorInputContainer {
@@ -93,6 +105,7 @@
 .popularColors {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   width: 100%;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -128,6 +141,7 @@
   align-items: center;
   border: #9f06b7 2px solid;
   border-radius: 5px;
+  margin: 3px;
 }
 
 .selectedPopularColor {

@@ -1,7 +1,15 @@
 import React, { useState, useMemo } from "react";
 import "./Template.css";
 
-export const Template = ({ radius, zIndex, top, left, bottom, pathColor }) => {
+export const Template = ({
+  radius,
+  zIndex,
+  top,
+  left,
+  bottom,
+  pathColor,
+  showStroke,
+}) => {
   const diameter = radius * 2;
   const numParts = 120;
   const segmentAngle = 360 / numParts;
@@ -47,16 +55,24 @@ export const Template = ({ radius, zIndex, top, left, bottom, pathColor }) => {
         const endY = radius + radius * Math.sin((endAngle * Math.PI) / 180);
 
         const pathId = `path-${index}`;
+        const fillColor = colors[index];
+        let strokeColor = showStroke
+          ? fillColor === "black"
+            ? "white"
+            : "black"
+          : "none";
 
         return (
           <path
             key={index}
-            className="circle-segment"
             id={pathId}
             d={`M ${radius},${radius} L ${startX},${startY} A ${radius},${radius} 0 ${
               endAngle - startAngle > 180 ? 1 : 0
             },1 ${endX},${endY} Z`}
             fill={colors[index]}
+            style={{
+              stroke: strokeColor,
+            }}
             onClick={() => updatePathColor(index, pathColor)}
             onDoubleClick={handleDoubleClick} // Add double click event handler
           ></path>
