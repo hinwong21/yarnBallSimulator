@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+// Import React and other necessary libraries
+import React, { useState, useEffect } from "react";
 import "./Template.css";
 
+// Define the Template component
 export const Template = ({
   id,
   radius,
@@ -12,13 +14,30 @@ export const Template = ({
   pathColor,
   showStroke,
   colorArray,
+  isUpper,
 }) => {
+  // Calculate diameter and segment angle
   const diameter = radius * 2;
   const segmentAngle = 360 / numParts;
 
+  // Calculate the start and end indices for the piece based on the id
+  let pieceSize, startIndex, endIndex;
+
+  let colorTemp = [];
+  if (isUpper) {
+    pieceSize = colorArray.length / 10;
+    startIndex = id * pieceSize;
+    endIndex = id * pieceSize + pieceSize;
+    colorTemp = colorArray.slice(startIndex, endIndex);
+  } else {
+    pieceSize = colorArray.length / 10;
+    startIndex = id * pieceSize;
+    endIndex = id * pieceSize + pieceSize;
+    colorTemp = colorArray.slice(startIndex, endIndex);
+  }
+  // console.log(colorTemp, id);
   // Define state for color
-  const [colors, setColors] = useState(colorArray);
-  console.log(colorArray, "template");
+  const [colors, setColors] = useState(colorTemp);
 
   // Function to update path color
   const updatePathColor = (index, color) => {
@@ -45,6 +64,12 @@ export const Template = ({
     setColors(newColors);
   };
 
+  // Update colors state when colorArray prop changes
+  useEffect(() => {
+    setColors(colorTemp);
+  }, [colorArray]);
+
+  // Render the SVG with paths
   return (
     <svg
       className="circle-divider"
@@ -63,6 +88,7 @@ export const Template = ({
 
         const pathId = `path-${index}`;
         const fillColor = colors[index];
+        // console.log(colors[index], index);
 
         let strokeColor;
         if (showStroke) {

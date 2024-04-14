@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const FillGrid = ({ selectedColor, onUpdateUpperSemiCircle }) => {
+export const FillGrid = ({ selectedColor, onUpdateSemiCircle }) => {
   const [squareColors, setSquareColors] = useState(
     new Array(60 * 10).fill("#FFFFFF")
   ); // Initialize array with white color for each square
@@ -14,7 +14,7 @@ export const FillGrid = ({ selectedColor, onUpdateUpperSemiCircle }) => {
     setSquareColors(updatedColors);
 
     // Pass the updated colors array to the function responsible for updating the upper semi-circle
-    onUpdateUpperSemiCircle(updatedColors);
+    onUpdateSemiCircle(updatedColors);
   };
 
   const numCols = 10; // Number of columns

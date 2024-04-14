@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 import { Template } from "./Template";
 import { ColorPicker } from "./component/ColorPicker";
@@ -10,25 +10,69 @@ import { FillGrid } from "./component/FillGrid";
 
 function App() {
   const [selectedColor, setSelectedColor] = useState("#000000");
-  const upperSemiCircles = [];
-  const lowerSemiCircles = [];
+  const [upperSemiCircles, setUpperSemiCircles] = useState([]);
+  const [lowerSemiCircles, setLowerSemiCircles] = useState([]);
   const upperCircleRef = useRef();
   const lowerCircleRef = useRef();
   const [showDisplay, setShowDisplay] = useState(false);
-  const [upperPathColors, setUpperPathColors] = useState([]);
-  const [lowerPathColors, setLowerPathColors] = useState([]);
+  const [displayUpperPathColors, setDisplayUpperPathColors] = useState([]);
+  const [displayLowerPathColors, setDisplayLowerPathColors] = useState([]);
 
-  const filledWhiteArrTemp = new Array(120 * 10).fill("#FFFFFF");
-  const filledWhiteArr = [];
-  for (let i = 0; i < filledWhiteArrTemp.length; i += 119) {
-    filledWhiteArr.push(filledWhiteArrTemp.slice(i, i + 119));
-  }
-  const [updateUpperPathColors, setUpdateUpperPathColors] =
+  const filledWhiteArr = new Array(60 * 10).fill("#FFFFFF");
+  const [updateUpperPathColors, setUpdateUpperPathColors] = useState(
+    filledWhiteArr.concat(filledWhiteArr)
+  );
+  const [updateLowerPathColors, setUpdateLowerPathColors] =
     useState(filledWhiteArr);
 
-  const upperPathColorsTemp = {};
-  const lowerPathColorsTemp = {};
+  const generateSemiCircles = () => {
+    const newUpperSemiCircles = [];
+    const newLowerSemiCircles = [];
 
+    for (let i = 0; i < 10; i++) {
+      const radius = 300 - i * 15;
+      const zIndex = 10 + i * 10;
+      const top = i * 15;
+      const left = i * 15;
+
+      newUpperSemiCircles.push(
+        <Template
+          key={`upper-${i}`}
+          id={i}
+          radius={radius}
+          numParts={120}
+          zIndex={zIndex}
+          top={top}
+          left={left}
+          pathColor={selectedColor}
+          showStroke
+          colorArray={updateUpperPathColors}
+          isUpper
+        />
+      );
+
+      newLowerSemiCircles.push(
+        <Template
+          key={`lower-${i}`}
+          id={i}
+          radius={radius}
+          numParts={120}
+          zIndex={zIndex}
+          bottom={top}
+          left={left}
+          pathColor={selectedColor}
+          showStroke
+          colorArray={updateLowerPathColors}
+        />
+      );
+    }
+
+    setUpperSemiCircles(newUpperSemiCircles);
+    setLowerSemiCircles(newLowerSemiCircles);
+  };
+
+  let upperPathColorsTemp = {};
+  let lowerPathColorsTemp = {};
   // Function to get path colors from upper and lower circles
   const getPathColors = () => {
     const upperPaths = Array.from(
@@ -64,68 +108,22 @@ function App() {
 
     // show Display and give props
     setShowDisplay(true);
-    setUpperPathColors(Object.values(upperPathColorsFiltered));
-    setLowerPathColors(Object.values(lowerPathColorsFiltered));
+    setDisplayUpperPathColors(Object.values(upperPathColorsFiltered));
+    setDisplayLowerPathColors(Object.values(lowerPathColorsFiltered));
   };
 
   // Function to update upper semi-circle colors based on the clicked squares
-  const updateUpperSemiCircleColors = (updatedColors) => {
-    // Initialize an array to hold arrays of 60 colors each
-    const organizedColors = [];
-
-    // Loop through the updatedColors array and organize colors into arrays of 60 elements each
-    for (let i = 0; i < updatedColors.length; i += 60) {
-      organizedColors.push(updatedColors.slice(i, i + 60));
+  const updateSemiCircleColors = (updatedColors, isUpper) => {
+    if (isUpper) {
+      setUpdateUpperPathColors(updatedColors.concat(updatedColors));
+    } else {
+      setUpdateLowerPathColors(updatedColors);
     }
-
-    // Concatenate the updatedColors for each array
-    const concatenatedColors = organizedColors.map((colorsArray) =>
-      colorsArray.concat(colorsArray)
-    );
-
-    setUpdateUpperPathColors(concatenatedColors);
   };
 
-  const colorArray = new Array(60 * 10).fill("#FFFFFF");
-  // Loop 10 times
-  for (let i = 0; i <= 10; i++) {
-    // Calculate radius and zIndex
-    const radius = 300 - i * 15;
-    const zIndex = 10 + i * 10;
-    const top = i * 15;
-    const left = i * 15;
-
-    // Add Template component with calculated props to templates array
-    upperSemiCircles.push(
-      <Template
-        key={`upper-${i}`}
-        id={`upper-${i}`}
-        radius={radius}
-        numParts={120}
-        zIndex={zIndex}
-        top={top}
-        left={left}
-        pathColor={selectedColor}
-        showStroke
-        colorArray={updateUpperPathColors[i]}
-      />
-    );
-
-    lowerSemiCircles.push(
-      <Template
-        key={`lower-${i}`}
-        id={`lower-${i}`}
-        radius={radius}
-        numParts={120}
-        zIndex={zIndex}
-        bottom={top}
-        left={left}
-        pathColor={selectedColor}
-        showStroke
-        colorArray={colorArray}
-      />
-    );
-  }
+  useEffect(() => {
+    generateSemiCircles();
+  }, [selectedColor, updateUpperPathColors, updateLowerPathColors]);
 
   return (
     <div className="App">
@@ -138,7 +136,16 @@ function App() {
           {/* Pass the updateUpperSemiCircleColors function to FillGrid component */}
           <FillGrid
             selectedColor={selectedColor}
-            onUpdateUpperSemiCircle={updateUpperSemiCircleColors}
+            onUpdateSemiCircle={(updatedColors) =>
+              updateSemiCircleColors(updatedColors, true)
+            }
+          />
+
+          <FillGrid
+            selectedColor={selectedColor}
+            onUpdateSemiCircle={(updatedColors) =>
+              updateSemiCircleColors(updatedColors, false)
+            }
           />
         </div>
 
@@ -159,8 +166,8 @@ function App() {
 
       {showDisplay && (
         <Display
-          upperPathColors={upperPathColors}
-          lowerPathColors={lowerPathColors}
+          upperPathColors={displayUpperPathColors}
+          lowerPathColors={displayLowerPathColors}
         />
       )}
     </div>
