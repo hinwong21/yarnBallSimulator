@@ -1,0 +1,29 @@
+.displayContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: calc(300px * 2 + 5px * 2);
+  height: calc(300px * 2 + 5px * 2);
+  position: relative;
+  border: 1px solid;
+  margin: 10px;
+}
+
+.displayUpperCircles {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  height: calc(300px + 0.5px);
+  width: calc(100% - 5px * 2);
+  overflow: hidden;
+}
+
+.displayLowerCircles {
+  position: absolute;
+  top: -300px;
+  left: 5px;
+  height: calc(300px + 0.5px);
+  width: calc(100% - 5px * 2);
+  overflow: hidden;
+  transform: rotate(180deg);
+}

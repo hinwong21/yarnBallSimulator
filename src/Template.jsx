@@ -1,37 +1,43 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import "./Template.css";
 
 export const Template = ({
+  id,
   radius,
+  numParts,
   zIndex,
   top,
   left,
   bottom,
   pathColor,
   showStroke,
+  colorArray,
 }) => {
   const diameter = radius * 2;
-  const numParts = 120;
   const segmentAngle = 360 / numParts;
 
-  // Memoize start angles calculation
-  const startAngles = useMemo(() => {
-    return Array.from({ length: numParts }, (_, index) => index * segmentAngle);
-  }, [numParts, segmentAngle]);
-
   // Define state for color
-  const [colors, setColors] = useState(() => Array(numParts).fill("white"));
+  const [colors, setColors] = useState(colorArray);
+  console.log(colorArray, "template");
 
-  // Memoize updatePathColor function
-  const updatePathColor = useMemo(() => {
-    return (index, color) => {
-      setColors((prevColors) => {
-        const updatedColors = [...prevColors];
-        updatedColors[index] = color;
-        return updatedColors;
-      });
-    };
-  }, []);
+  // Function to update path color
+  const updatePathColor = (index, color) => {
+    setColors((prevColors) => {
+      const updatedColors = [...prevColors];
+      updatedColors[index] = color;
+
+      // Check if the current index is a multiple of 5
+      if ((index + 1) % 5 === 0) {
+        // Fill 5 paths from index to index - 4
+        for (let i = index; i > index - 5; i--) {
+          if (i >= 0) {
+            updatedColors[i] = color;
+          }
+        }
+      }
+      return updatedColors;
+    });
+  };
 
   // Function to handle double click event
   const handleDoubleClick = () => {
@@ -47,7 +53,8 @@ export const Template = ({
       viewBox={`0 0 ${diameter} ${diameter}`}
       style={{ zIndex, top, left, bottom }}
     >
-      {startAngles.map((startAngle, index) => {
+      {Array.from({ length: numParts }, (_, index) => {
+        const startAngle = index * segmentAngle;
         const endAngle = startAngle + segmentAngle;
         const startX = radius + radius * Math.cos((startAngle * Math.PI) / 180);
         const startY = radius + radius * Math.sin((startAngle * Math.PI) / 180);
@@ -56,26 +63,24 @@ export const Template = ({
 
         const pathId = `path-${index}`;
         const fillColor = colors[index];
-        let strokeColor = showStroke
-          ? fillColor === "black"
-            ? "white"
-            : "black"
-          : "none";
+
+        let strokeColor;
+        if (showStroke) {
+          strokeColor = fillColor === "#000000" ? "white" : "black";
+        }
 
         return (
           <path
-            key={index}
+            key={`${id} - ${index}`}
             id={pathId}
             d={`M ${radius},${radius} L ${startX},${startY} A ${radius},${radius} 0 ${
               endAngle - startAngle > 180 ? 1 : 0
             },1 ${endX},${endY} Z`}
-            fill={colors[index]}
-            style={{
-              stroke: strokeColor,
-            }}
+            fill={fillColor}
+            style={{ stroke: strokeColor }}
             onClick={() => updatePathColor(index, pathColor)}
-            onDoubleClick={handleDoubleClick} // Add double click event handler
-          ></path>
+            onDoubleClick={handleDoubleClick}
+          />
         );
       })}
     </svg>

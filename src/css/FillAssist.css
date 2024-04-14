@@ -1,0 +1,19 @@
+.upperFillAssist {
+  height: 150px;
+  width: 300px;
+  overflow: hidden;
+  position: absolute;
+  top: 155px;
+  left: 155px;
+  z-index: 990;
+}
+
+.lowerFillAssist {
+  height: 150px;
+  width: 300px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 16px;
+  left: 155px;
+  z-index: 990;
+}

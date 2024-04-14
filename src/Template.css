@@ -2,3 +2,23 @@
   display: block;
   position: absolute;
 }
+
+.templatePath {
+  pointer-events: all;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(
+    60,
+    5px
+  ); /* Adjust based on the number of columns */
+  grid-template-rows: repeat(10, 5px); /* Adjust based on the number of rows */
+  gap: 1px; /* Adjust the gap between squares if needed */
+  background-color: white; /* Set the background color to white */
+  margin: 5px;
+}
+
+.square {
+  border: 1px solid black; /* Optional: Add borders to squares */
+}

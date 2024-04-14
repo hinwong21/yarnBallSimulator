@@ -12,7 +12,7 @@ export const ColorPicker = ({ onChange }) => {
   // Array of popular colors
   const popularColors = [
     "#FF0000", // Red
-    "#FFFF00", // Yellow
+    "#f0c56e", // Yellow
     "#0000FF", // Blue
     "#00FF00", // Green
     "#FF00FF", // Magenta

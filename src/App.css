@@ -5,6 +5,7 @@
   align-items: center;
   text-align: center;
   width: 100vw;
+  background-color: #fdece4;
 }
 
 .editContainer {
@@ -25,6 +26,8 @@
   height: calc(300px * 2 + 5px * 2 + 35px);
   position: relative;
   border: 1px solid;
+  margin: 10px;
+  background-color: white;
 }
 
 .editPanel {
@@ -60,19 +63,6 @@
   transform: rotate(180deg);
 }
 
-/* center white circle */
-.whiteCircle {
-  position: absolute;
-  background-color: white;
-  border-radius: 50%;
-  z-index: 999;
-  width: calc(300px + 10px);
-  height: calc(300px + 35px);
-  border: 1px solid;
-  top: 50;
-  left: 50;
-}
-
 .colorPickerContainer {
   display: flex;
   flex-direction: column;
@@ -100,6 +90,7 @@
   appearance: none;
   border: none;
   letter-spacing: 0.5px;
+  background-color: #fdece4;
 }
 
 .popularColors {
@@ -150,4 +141,15 @@
   cursor: pointer;
   border-radius: 5px;
   transform: scale(0.9);
+}
+
+.circle-divider {
+  position: absolute;
+}
+
+.path {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
